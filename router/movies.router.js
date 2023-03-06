@@ -1,11 +1,11 @@
 import express from "express"; 
-import { client } from "../index.js";
+import { getMovies, getMovieById, createMovies, deleteMovieById, updateMovieById } from "../service/movies.service.js";
 const router = express.Router();
 
 router.get("/", async function (request, response) {
   // Cursor -> Pagination (20) | Cursor -> Array (toArray())
-  const movies = await client.db("b42wd2").collection("movies").find({}).toArray();
-  console.log(movies)
+  const movies = await getMovies();
+  // console.log(movies)
   response.send(movies);
 })
 
@@ -14,7 +14,7 @@ router.get("/:id",async function (request, response) {
     // const movie = movies.filter((ele)=>ele.id === id)    // filter is get the values by array
     // const movie = movies.find((ele)=>ele.id === id)     // find is get the value by particuler value
     // console.log(id);
-  const movie = await client.db("b42wd2").collection("movies").findOne({ id: id });
+  const movie = await getMovieById(id);
   movie ? response.send(movie) : response.status(404).send({ message: "Movie not found" });
 })
 
@@ -23,7 +23,7 @@ router.post("/",async function (request, response) {
   const data = request.body;
   console.log(data);
 
-  const result = await client.db("b42wd2").collection("movies").insertMany(data);
+  const result = await createMovies(data);
   response.send(result);
 })
 
@@ -31,7 +31,7 @@ router.post("/",async function (request, response) {
 router.delete("/:id",async function (request, response) {
     const { id } = request.params;
     // console.log(id);
-  const result = await client.db("b42wd2").collection("movies").deleteOne({ id: id });
+  const result = await deleteMovieById(id);
     result.deletedCount >=1 ? response.send({message:"Movie deleted successfully"}) : response.status(404).send({ message: "Movie not found" });
 })
 
@@ -42,8 +42,10 @@ router.put("/:id", async function (request, response) {
   // console.log(data);
   // console.log(id);
 
-  const result = await client.db("b42wd2").collection("movies").updateOne({ id: id }, { $set: data }); 
+  const result = await updateMovieById(id, data); 
   response.send(result);
 })
 
 export default router;
+
+
