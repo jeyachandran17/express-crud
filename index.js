@@ -4,6 +4,7 @@ dotenv.config()
 import express from "express"; // "type": "module"
 import { MongoClient } from "mongodb";
 import moviesRouter from "./router/movies.router.js"
+import cors from "cors";
 const app = express();
 
 
@@ -21,6 +22,7 @@ app.get("/", function (request, response) {
   response.send("🙋‍♂️, 🌏 Node js🎊✨🤩");
 });
 
+app.use(cors());
 
 app.use("/movies", moviesRouter);
 
