@@ -1,10 +1,17 @@
 import express from "express"; 
 import { getMovies, getMovieById, createMovies, deleteMovieById, updateMovieById } from "../service/movies.service.js";
 const router = express.Router();
+import { auth } from "../middleware/auth.js";
 
-router.get("/", async function (request, response) {
+router.get("/",  async function (request, response) {
+  console.log(request.query);
+
+  if (request.query.rating) {
+    request.query.rating = +request.query.rating;
+  }
+
   // Cursor -> Pagination (20) | Cursor -> Array (toArray())
-  const movies = await getMovies();
+  const movies = await getMovies(request.query);
   // console.log(movies)
   response.send(movies);
 })
@@ -28,7 +35,7 @@ router.post("/",async function (request, response) {
 })
 
 //  delete
-router.delete("/:id",async function (request, response) {
+router.delete("/:id", async function (request, response) {
     const { id } = request.params;
     // console.log(id);
   const result = await deleteMovieById(id);
