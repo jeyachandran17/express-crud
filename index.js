@@ -6,6 +6,7 @@ import { MongoClient } from "mongodb";
 import moviesRouter from "./router/movies.router.js"
 import usersRouter from "./router/users.router.js"
 import cors from "cors";
+import { auth } from './middleware/auth.js';
 
 
 const app = express();
@@ -54,7 +55,7 @@ app.use("/users", usersRouter);
 //   }
 // ]
 
-app.get("/mobiles",async function (request, response) {
+app.get("/mobiles",auth, async function (request, response) {
   const mobiles = await client.db("b42wd2").collection("mobiles").find({}).toArray();
   response.send(mobiles);
 })
